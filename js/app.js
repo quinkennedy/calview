@@ -9,8 +9,25 @@ import { initSettings, syncSettingsUI, renderClassList } from './settings.js';
 // ── Default state ─────────────────────────────────────────────────────────────
 
 const today = formatDate(new Date());
-const yearStart = today.slice(0, 4) + '-01-01';
-const yearEnd   = today.slice(0, 4) + '-12-31';
+
+// Current Mon–Sun week (weeks start Monday)
+function getMondayOfWeek(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const day = d.getDay(); // 0=Sun
+  const diff = day === 0 ? -6 : 1 - day; // shift to Monday
+  d.setDate(d.getDate() + diff);
+  return formatDate(d);
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return formatDate(d);
+}
+
+const thisMonday  = getMondayOfWeek(today);
+const thisSunday  = addDays(thisMonday, 6);
+const rangeStart  = addDays(thisMonday, -7);  // prev week Monday
+const rangeEnd    = addDays(thisSunday, 7);   // next week Sunday
 
 const DEFAULT_TEMPLATE = `<span class="month-label">{{monthLabel}}</span>
 <span class="day-name">{{dayName}}</span>
@@ -20,6 +37,11 @@ const DEFAULT_CSS = `/* Calview — custom day styles
    Target days using auto-assigned classes like:
    .dow0 (Sunday), .dom1 (1st of month), .moy3 (March), .woy1, .today, etc.
 */
+
+:root { 
+  --cell-min-height: 72px;
+  /* See style.css in codebase for more CSS you can override */
+}
 
 .day-cell {
   border: 1px solid #e0e0e0;
@@ -64,10 +86,10 @@ const DEFAULT_CSS = `/* Calview — custom day styles
 
 const DEFAULT_STATE = {
   settings: {
-    startDate:          yearStart,
-    endDate:            yearEnd,
-    focusStart:         yearStart,
-    focusEnd:           yearEnd,
+    startDate:          rangeStart,
+    endDate:            rangeEnd,
+    focusStart:         thisMonday,
+    focusEnd:           thisSunday,
     daysPerAxis:        7,
     axisDirection:      'row',
     monthNamePlacement: 'first-day',
