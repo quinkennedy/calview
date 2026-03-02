@@ -1,0 +1,333 @@
+/* ============================================================
+   Calview — app chrome stylesheet
+   Day cell appearance is controlled by the user's custom CSS.
+   ============================================================ */
+
+:root {
+  --cell-min-width:    90px;
+  --cell-min-height:   72px;
+  --event-bar-height:  18px;
+  --event-bar-gap:      2px;
+  --settings-width:   360px;
+  --header-height:     48px;
+  --tab-height:        36px;
+  --transition-panel:  200ms ease;
+
+  --color-bg:          #ffffff;
+  --color-surface:     #f7f7f8;
+  --color-border:      #ddd;
+  --color-text:        #1a1a1a;
+  --color-text-muted:  #888;
+  --color-accent:      #4a90d9;
+  --color-danger:      #c0392b;
+  --color-drag-sel:    rgba(74, 144, 217, 0.18);
+}
+
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 4px;
+  padding: 4px 10px;
+  line-height: 1.4;
+}
+button:hover { background: #ebebed; }
+button:active { background: #ddd; }
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="color"],
+textarea {
+  font: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  background: #fff;
+  color: var(--color-text);
+}
+input[type="color"] { padding: 2px; height: 30px; width: 48px; cursor: pointer; }
+textarea { resize: vertical; width: 100%; font-family: 'Consolas', 'Menlo', monospace; font-size: 12px; }
+
+label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--color-text-muted); }
+label input, label textarea { color: var(--color-text); }
+label.full-label { width: 100%; }
+
+fieldset { border: 1px solid var(--color-border); border-radius: 6px; padding: 8px 10px; }
+legend { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); padding: 0 4px; }
+
+.hint { font-size: 11px; color: var(--color-text-muted); margin-top: 4px; }
+
+/* ── Header ── */
+#app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  height: var(--header-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.app-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+/* Drag mode toggle */
+#drag-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8e8ea;
+  border-radius: 6px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+.mode-label { font-size: 11px; color: var(--color-text-muted); padding: 0 4px; }
+.mode-btn {
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+.mode-btn:hover { background: rgba(0,0,0,0.06); }
+.mode-btn.active {
+  background: #fff;
+  color: var(--color-accent);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.header-actions button { font-size: 12px; }
+
+/* ── App body ── */
+#app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Settings panel ── */
+#settings-panel {
+  width: var(--settings-width);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width var(--transition-panel);
+}
+#settings-panel.collapsed {
+  width: 0;
+  visibility: hidden;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background: #eeeef0;
+}
+.tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 8px 4px;
+  height: var(--tab-height);
+}
+.tab:hover { background: rgba(0,0,0,0.04); color: var(--color-text); }
+.tab.active { color: var(--color-accent); border-bottom-color: var(--color-accent); background: transparent; }
+
+.tab-panel { display: none; flex: 1; overflow-y: auto; }
+.tab-panel.active { display: block; }
+
+/* Layout tab form */
+#tab-layout { padding: 12px; }
+#settings-form { display: flex; flex-direction: column; gap: 10px; }
+#settings-form fieldset { display: flex; flex-direction: column; gap: 6px; }
+.radio-group { border: none; padding: 0; }
+.radio-group label { flex-direction: row; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text); }
+.settings-actions { display: flex; gap: 8px; padding-top: 4px; }
+.settings-actions button { flex: 1; }
+
+/* Template & CSS tabs */
+.tab-content { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.template-preview-label { font-size: 11px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.template-preview {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: #fff;
+  min-height: var(--cell-min-height);
+  width: var(--cell-min-width);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Token reference table */
+.token-ref { font-size: 11px; }
+.token-ref summary { cursor: pointer; color: var(--color-accent); padding: 2px 0; user-select: none; }
+.token-ref table { margin-top: 6px; border-collapse: collapse; width: 100%; }
+.token-ref td { padding: 2px 4px; }
+.token-ref code { background: #eee; border-radius: 3px; padding: 1px 3px; font-size: 10px; }
+
+/* Classes tab */
+#tab-classes { padding: 12px; }
+.tab-content .hint { margin-bottom: 4px; }
+#class-assignments-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.class-assignment-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+.class-assignment-name { flex: 1; font-family: monospace; font-weight: 600; }
+.class-assignment-count { color: var(--color-text-muted); font-size: 11px; }
+.btn-remove-class { font-size: 11px; padding: 2px 6px; color: var(--color-danger); border-color: transparent; background: transparent; }
+.btn-remove-class:hover { background: #fef0ef; border-color: #e0c0be; }
+.no-classes-msg { color: var(--color-text-muted); font-size: 12px; font-style: italic; }
+
+/* ── Calendar root ── */
+#calendar-root {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Row-major: flex row, wrap */
+#calendar-root[data-axis="row"] {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#calendar-root[data-axis="row"] .day-cell {
+  flex: 0 0 calc(100% / var(--days-per-axis, 7));
+  min-height: var(--cell-min-height);
+}
+
+/* Column-major: flex column, wrap */
+#calendar-root[data-axis="column"] {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#calendar-root[data-axis="column"] .day-cell {
+  flex: 0 0 var(--cell-min-height);
+  width: var(--cell-min-width);
+}
+
+/* ── Day cell ── */
+.day-cell {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+  /* Appearance entirely via customCSS — no styles here by default */
+}
+.day-cell.unfocused { opacity: 0.35; }
+.day-cell.drag-selected { outline: 2px solid var(--color-accent); outline-offset: -2px; z-index: 1; }
+
+/* ── Event bars ── */
+.event-bars {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: calc((var(--bar-slot-count, 0)) * (var(--event-bar-height) + var(--event-bar-gap)));
+  pointer-events: none;
+  z-index: 2;
+}
+.event-bar {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  height: var(--event-bar-height);
+  /* lane 0 = bottom slot, higher lanes stack upward */
+  bottom: calc(var(--bar-lane, 0) * (var(--event-bar-height) + var(--event-bar-gap)));
+  background: var(--event-color, var(--color-accent));
+  pointer-events: auto;
+  opacity: 0.9;
+  font-size: 10px;
+  color: var(--event-text-color, #fff);
+  line-height: var(--event-bar-height);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 5px;
+  cursor: pointer;
+}
+.event-bar:hover { opacity: 1; filter: brightness(1.08); }
+.event-bar.start  { border-radius: 999px 0 0 999px; left: 3px; }
+.event-bar.end    { border-radius: 0 999px 999px 0; right: 3px; }
+.event-bar.single { border-radius: 999px; left: 3px; right: 3px; }
+.event-bar.middle { border-radius: 0; }
+
+/* ── Dialogs ── */
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+  max-width: 380px;
+  width: 90vw;
+}
+dialog::backdrop { background: rgba(0,0,0,0.35); }
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 24px;
+}
+dialog h2 { font-size: 16px; font-weight: 700; margin: 0; }
+dialog label { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--color-text); }
+dialog label input { width: 180px; }
+.dialog-actions { display: flex; gap: 8px; padding-top: 4px; }
+.dialog-actions button { flex: 1; }
+.btn-danger { color: var(--color-danger); border-color: #e0c0be; }
+.btn-danger:hover { background: #fef0ef; }

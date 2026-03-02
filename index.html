@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calview</title>
+  <link rel="stylesheet" href="style.css">
+  <style id="custom-styles"></style>
+</head>
+<body>
+  <div id="app">
+
+    <header id="app-header">
+      <h1 class="app-title">Calview</h1>
+
+      <div id="drag-mode-toggle" role="group" aria-label="Drag mode">
+        <span class="mode-label">Drag:</span>
+        <button id="mode-event" class="mode-btn active" data-mode="event">Event</button>
+        <button id="mode-class" class="mode-btn" data-mode="class">Class</button>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-import" type="button">Import JSON</button>
+        <button id="btn-export" type="button">Export JSON</button>
+        <input type="file" id="import-input" accept=".json" hidden>
+        <button id="btn-toggle-settings" type="button" aria-expanded="false" aria-controls="settings-panel">
+          &#9881; Settings
+        </button>
+      </div>
+    </header>
+
+    <div id="app-body">
+
+      <aside id="settings-panel" class="collapsed" aria-hidden="true">
+        <nav class="tabs" role="tablist">
+          <button class="tab active" role="tab" aria-selected="true"  data-tab="layout">Layout</button>
+          <button class="tab"        role="tab" aria-selected="false" data-tab="template">Template</button>
+          <button class="tab"        role="tab" aria-selected="false" data-tab="css">CSS</button>
+          <button class="tab"        role="tab" aria-selected="false" data-tab="classes">Classes</button>
+        </nav>
+
+        <!-- Layout Tab -->
+        <div class="tab-panel active" id="tab-layout" role="tabpanel">
+          <form id="settings-form" novalidate>
+            <fieldset>
+              <legend>Date Range</legend>
+              <label>Start <input type="date" name="startDate"></label>
+              <label>End   <input type="date" name="endDate"></label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Focus Range</legend>
+              <label>Focus Start <input type="date" name="focusStart"></label>
+              <label>Focus End   <input type="date" name="focusEnd"></label>
+              <p class="hint">Days outside focus range are grayed out.</p>
+            </fieldset>
+
+            <fieldset>
+              <legend>Layout</legend>
+              <label>Days per axis
+                <input type="number" name="daysPerAxis" min="1" max="366" step="1" value="7">
+              </label>
+              <fieldset class="radio-group">
+                <legend>Direction</legend>
+                <label><input type="radio" name="axisDirection" value="row" checked> Row-major</label>
+                <label><input type="radio" name="axisDirection" value="column"> Column-major</label>
+              </fieldset>
+            </fieldset>
+
+            <fieldset>
+              <legend>Month Name Placement</legend>
+              <label><input type="radio" name="monthNamePlacement" value="first-day" checked> On first day of month</label>
+              <label><input type="radio" name="monthNamePlacement" value="axis-start"> At start of axis</label>
+            </fieldset>
+
+            <div class="settings-actions">
+              <button type="submit">Apply</button>
+              <button type="button" id="btn-settings-cancel">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Template Tab -->
+        <div class="tab-panel" id="tab-template" role="tabpanel" hidden>
+          <div class="tab-content">
+            <label class="full-label">
+              Day Template (HTML)
+              <textarea id="template-editor" rows="8" spellcheck="false"></textarea>
+            </label>
+            <div class="template-preview-label">Preview:</div>
+            <div id="template-preview" class="template-preview"></div>
+            <details class="token-ref">
+              <summary>Available tokens</summary>
+              <table>
+                <tr><td><code>{{date}}</code></td><td>2026-03-15</td></tr>
+                <tr><td><code>{{year}}</code></td><td>2026</td></tr>
+                <tr><td><code>{{moy}}</code></td><td>3</td></tr>
+                <tr><td><code>{{monthName}}</code></td><td>Mar</td></tr>
+                <tr><td><code>{{monthNameFull}}</code></td><td>March</td></tr>
+                <tr><td><code>{{dom}}</code></td><td>15</td></tr>
+                <tr><td><code>{{dow}}</code></td><td>0</td></tr>
+                <tr><td><code>{{dayName}}</code></td><td>Sun</td></tr>
+                <tr><td><code>{{dayNameFull}}</code></td><td>Sunday</td></tr>
+                <tr><td><code>{{doy}}</code></td><td>74</td></tr>
+                <tr><td><code>{{woy}}</code></td><td>11</td></tr>
+                <tr><td><code>{{monthLabel}}</code></td><td>Mar (when applicable)</td></tr>
+              </table>
+            </details>
+            <button id="btn-apply-template" type="button">Apply Template</button>
+          </div>
+        </div>
+
+        <!-- CSS Tab -->
+        <div class="tab-panel" id="tab-css" role="tabpanel" hidden>
+          <div class="tab-content">
+            <label class="full-label">
+              Custom CSS (live)
+              <textarea id="css-editor" rows="14" spellcheck="false"></textarea>
+            </label>
+            <details class="token-ref">
+              <summary>Available classes</summary>
+              <table>
+                <tr><td><code>.dow0</code>–<code>.dow6</code></td><td>Day of week (0=Sun)</td></tr>
+                <tr><td><code>.dom1</code>–<code>.dom31</code></td><td>Day of month</td></tr>
+                <tr><td><code>.moy1</code>–<code>.moy12</code></td><td>Month of year</td></tr>
+                <tr><td><code>.doy1</code>–<code>.doy366</code></td><td>Day of year</td></tr>
+                <tr><td><code>.woy1</code>–<code>.woy53</code></td><td>ISO week of year</td></tr>
+                <tr><td><code>.date-YYYY-MM-DD</code></td><td>Specific date</td></tr>
+                <tr><td><code>.today</code></td><td>Today</td></tr>
+                <tr><td><code>.unfocused</code></td><td>Outside focus range</td></tr>
+                <tr><td><code>.day-cell</code></td><td>All day cells</td></tr>
+              </table>
+            </details>
+          </div>
+        </div>
+
+        <!-- Classes Tab -->
+        <div class="tab-panel" id="tab-classes" role="tabpanel" hidden>
+          <div class="tab-content">
+            <p class="hint">Drag in <strong>Class</strong> mode to assign classes to days.</p>
+            <div id="class-assignments-list"></div>
+          </div>
+        </div>
+
+      </aside>
+
+      <main id="calendar-root" data-axis="row"></main>
+
+    </div><!-- #app-body -->
+
+  </div><!-- #app -->
+
+  <!-- Event dialog -->
+  <dialog id="event-dialog">
+    <form id="event-form">
+      <h2 id="event-dialog-title">New Event</h2>
+      <label>Name <input type="text" name="name" required autocomplete="off"></label>
+      <label>Color <input type="color" name="color" value="#4a90d9"></label>
+      <label>Start <input type="date" name="startDate" required></label>
+      <label>End   <input type="date" name="endDate" required></label>
+      <label>Lane  <input type="number" name="lane" step="0.1" placeholder="auto"></label>
+      <div class="dialog-actions">
+        <button type="submit" id="btn-event-save">Save</button>
+        <button type="button" id="btn-event-delete" class="btn-danger" hidden>Delete</button>
+        <button type="button" id="btn-event-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Class assign dialog -->
+  <dialog id="class-dialog">
+    <form id="class-form">
+      <h2>Assign CSS Class</h2>
+      <p id="class-dialog-info"></p>
+      <label>Class name
+        <input type="text" name="className" required
+               pattern="[a-zA-Z_-][a-zA-Z0-9_-]*"
+               placeholder="e.g. holiday"
+               autocomplete="off">
+      </label>
+      <p class="hint">Use letters, numbers, hyphens, underscores. No spaces.</p>
+      <div class="dialog-actions">
+        <button type="submit" id="btn-class-save">Assign</button>
+        <button type="button" id="btn-class-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
