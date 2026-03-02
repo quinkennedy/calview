@@ -84,6 +84,17 @@ const DEFAULT_CSS = `/* Calview — custom day styles
 }
 `;
 
+// Print page dimensions in CSS units (width × height of printable area at 96 dpi)
+// Values are the content area after typical ~0.5in margins are accounted for.
+const PRINT_SIZES = {
+  'letter-landscape': { width: '10in',    height: '7.5in'  },
+  'a4-landscape':     { width: '267mm',   height: '180mm'  },
+  'legal-landscape':  { width: '13in',    height: '7.5in'  },
+  'letter-portrait':  { width: '7.5in',   height: '10in'   },
+  'a4-portrait':      { width: '180mm',   height: '267mm'  },
+  'legal-portrait':   { width: '7.5in',   height: '13in'   },
+};
+
 const DEFAULT_STATE = {
   settings: {
     startDate:          rangeStart,
@@ -93,6 +104,8 @@ const DEFAULT_STATE = {
     daysPerAxis:        7,
     axisDirection:      'row',
     monthNamePlacement: 'first-day',
+    printSize:          '',
+    printTitle:         '',
   },
   events:           [],
   classAssignments: [],
@@ -154,8 +167,30 @@ function init() {
 
 function renderAll() {
   applyCustomCSS(state.customCSS);
+  applyPrintSize(state.settings.printSize);
+  applyPrintTitle(state.settings.printTitle);
   renderCalendar(document.getElementById('calendar-root'), state);
   renderClassList(state.classAssignments, removeClassAssignment);
+}
+
+function applyPrintSize(key) {
+  const root = document.getElementById('calendar-root');
+  const size = PRINT_SIZES[key];
+  if (size) {
+    root.style.width    = size.width;
+    root.style.height   = size.height;
+    root.style.maxWidth = size.width;
+    root.style.flex     = 'none';
+  } else {
+    root.style.width    = '';
+    root.style.height   = '';
+    root.style.maxWidth = '';
+    root.style.flex     = '';
+  }
+}
+
+function applyPrintTitle(title) {
+  document.getElementById('print-title').textContent = title || '';
 }
 
 // ── Drag tracker setup ────────────────────────────────────────────────────────

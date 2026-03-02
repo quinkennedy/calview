@@ -73,6 +73,29 @@
               <label><input type="radio" name="monthNamePlacement" value="axis-start"> At start of axis</label>
             </fieldset>
 
+            <fieldset>
+              <legend>Print Size</legend>
+              <label>Title (optional)
+                <input type="text" name="printTitle" placeholder="e.g. Q1 2026 Calendar">
+              </label>
+              <label>Page size
+                <select name="printSize">
+                  <option value="">None (fill window)</option>
+                  <optgroup label="Landscape">
+                    <option value="letter-landscape">Letter landscape (11 × 8.5 in)</option>
+                    <option value="a4-landscape">A4 landscape (297 × 210 mm)</option>
+                    <option value="legal-landscape">Legal landscape (14 × 8.5 in)</option>
+                  </optgroup>
+                  <optgroup label="Portrait">
+                    <option value="letter-portrait">Letter portrait (8.5 × 11 in)</option>
+                    <option value="a4-portrait">A4 portrait (210 × 297 mm)</option>
+                    <option value="legal-portrait">Legal portrait (8.5 × 14 in)</option>
+                  </optgroup>
+                </select>
+              </label>
+              <p class="hint">Constrains the calendar to the printable area for WYSIWYG printing.</p>
+            </fieldset>
+
             <div class="settings-actions">
               <button type="submit">Apply</button>
               <button type="button" id="btn-settings-cancel">Cancel</button>
@@ -147,7 +170,10 @@
 
       </aside>
 
-      <main id="calendar-root" data-axis="row"></main>
+      <div id="calendar-area">
+        <div id="print-title" aria-hidden="true"></div>
+        <main id="calendar-root" data-axis="row"></main>
+      </div>
 
     </div><!-- #app-body -->
 

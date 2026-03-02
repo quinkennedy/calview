@@ -53,6 +53,7 @@ input[type="text"],
 input[type="date"],
 input[type="number"],
 input[type="color"],
+select,
 textarea {
   font: inherit;
   border: 1px solid var(--color-border);
@@ -226,6 +227,16 @@ legend { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-sp
 .btn-remove-class:hover { background: #fef0ef; border-color: #e0c0be; }
 .no-classes-msg { color: var(--color-text-muted); font-size: 12px; font-style: italic; }
 
+/* ── Calendar area (title + grid) ── */
+#calendar-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* ── Calendar root ── */
 #calendar-root {
   flex: 1;
@@ -306,6 +317,44 @@ legend { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-sp
 .event-bar.end    { border-radius: 0 999px 999px 0; right: 3px; }
 .event-bar.single { border-radius: 999px; left: 3px; right: 3px; }
 .event-bar.middle { border-radius: 0; }
+
+/* ── Print title ── */
+#print-title:not(:empty) {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 12px 0;
+}
+
+/* ── Print ── */
+@media print {
+  /* Force background colors to print (event bars, day cells, etc.) */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* Hide chrome */
+  #app-header,
+  #settings-panel,
+  dialog { display: none !important; }
+
+  body {
+    height: auto;
+    overflow: visible;
+  }
+
+  #app-body,
+  #calendar-area {
+    overflow: visible;
+    height: auto;
+  }
+
+  #calendar-root {
+    overflow: visible !important;
+    /* Size constraints are applied via JS when a print size is chosen */
+  }
+
+  #print-title:not(:empty) {
+    padding: 0 0 10px;
+  }
+}
 
 /* ── Dialogs ── */
 dialog {

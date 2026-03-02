@@ -45,6 +45,12 @@ export function syncSettingsUI(state) {
   const mplInput = form.querySelector(`input[name="monthNamePlacement"][value="${s.monthNamePlacement}"]`);
   if (mplInput) mplInput.checked = true;
 
+  const printSizeEl = form.elements['printSize'];
+  if (printSizeEl) printSizeEl.value = s.printSize || '';
+
+  const printTitleEl = form.elements['printTitle'];
+  if (printTitleEl) printTitleEl.value = s.printTitle || '';
+
   const cssEditor = document.getElementById('css-editor');
   if (cssEditor) cssEditor.value = state.customCSS || '';
 
@@ -136,6 +142,8 @@ function wireLayoutForm() {
     form.elements['focusStart'].value  = s.focusStart || '';
     form.elements['focusEnd'].value    = s.focusEnd   || '';
     form.elements['daysPerAxis'].value = s.daysPerAxis;
+    if (form.elements['printSize'])  form.elements['printSize'].value  = s.printSize  || '';
+    if (form.elements['printTitle']) form.elements['printTitle'].value = s.printTitle || '';
   });
 }
 
@@ -177,6 +185,8 @@ function readFormValues(form) {
     daysPerAxis:        parseInt(form.elements['daysPerAxis'].value, 10) || 7,
     axisDirection:      form.querySelector('input[name="axisDirection"]:checked')?.value || 'row',
     monthNamePlacement: form.querySelector('input[name="monthNamePlacement"]:checked')?.value || 'first-day',
+    printSize:          form.elements['printSize']?.value || '',
+    printTitle:         form.elements['printTitle']?.value || '',
   };
 }
 
