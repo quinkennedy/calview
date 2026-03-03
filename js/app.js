@@ -174,17 +174,20 @@ function renderAll() {
 }
 
 function applyPrintSize(key) {
+  const area = document.getElementById('calendar-area');
   const root = document.getElementById('calendar-root');
   const size = PRINT_SIZES[key];
   if (size) {
-    root.style.width    = size.width;
-    root.style.height   = size.height;
-    root.style.maxWidth = size.width;
-    root.style.flex     = 'none';
+    area.style.width    = size.width;
+    area.style.height   = size.height;
+    area.style.maxWidth = size.width;
+    area.style.flex     = 'none';
+    root.style.flex     = '';
   } else {
-    root.style.width    = '';
-    root.style.height   = '';
-    root.style.maxWidth = '';
+    area.style.width    = '';
+    area.style.height   = '';
+    area.style.maxWidth = '';
+    area.style.flex     = '';
     root.style.flex     = '';
   }
 }

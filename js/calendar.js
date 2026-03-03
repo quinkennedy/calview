@@ -34,12 +34,6 @@ export function renderCalendar(root, state) {
   root.dataset.axis = axisDirection;
   root.style.setProperty('--days-per-axis', daysPerAxis);
 
-  if (axisDirection === 'column') {
-    root.style.height = `${daysPerAxis * 72}px`;  // 72 = --cell-min-height
-  } else {
-    root.style.height = '';
-  }
-
   // Compute event segments
   const segmentsByDate = getEventSegments(events, _allDays, daysPerAxis);
 
